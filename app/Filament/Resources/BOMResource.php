@@ -5,7 +5,9 @@ namespace App\Filament\Resources;
 use App\Filament\Resources\BOMResource\Pages;
 use App\Filament\Resources\BOMResource\RelationManagers;
 use App\Models\BOM;
+use App\Models\Product;
 use Filament\Forms;
+use Filament\Forms\Components\Select;
 use Filament\Resources\Form;
 use Filament\Resources\Resource;
 use Filament\Resources\Table;
@@ -17,15 +19,26 @@ class BOMResource extends Resource
 {
     protected static ?string $model = BOM::class;
 
+    protected static ?string $pluralModelLabel = 'BOM';
+
     protected static ?string $navigationIcon = 'heroicon-o-tag';
+
+    protected static ?string $navigationGroup = 'Management';
 
     public static function form(Form $form): Form
     {
         return $form
             ->schema([
-                Forms\Components\TextInput::make('level')
-                    ->required()
-                    ->maxLength(255),
+                Select::make('id_product')
+                    ->label('Product')
+                    ->options(Product::all()->pluck('name', 'id')->toArray())->required(),
+                Select::make('level')
+                    ->options([
+                        '0' => '0',
+                        '1' => '1',
+                        '2' => '2',
+                        '3' => '3',
+                    ])->required(),
                 Forms\Components\TextInput::make('item')
                     ->required()
                     ->maxLength(255),
@@ -45,11 +58,14 @@ class BOMResource extends Resource
     {
         return $table
             ->columns([
+                Tables\Columns\TextColumn::make('product.name')
+                    ->label('Product'),
                 Tables\Columns\TextColumn::make('level'),
                 Tables\Columns\TextColumn::make('item'),
                 Tables\Columns\TextColumn::make('quantity'),
                 Tables\Columns\TextColumn::make('unit'),
-                Tables\Columns\TextColumn::make('moq'),
+                Tables\Columns\TextColumn::make('moq')
+                    ->label('MOQ'),
                 Tables\Columns\TextColumn::make('created_at')
                     ->dateTime(),
                 Tables\Columns\TextColumn::make('updated_at')
@@ -65,14 +81,14 @@ class BOMResource extends Resource
                 Tables\Actions\DeleteBulkAction::make(),
             ]);
     }
-    
+
     public static function getRelations(): array
     {
         return [
             //
         ];
     }
-    
+
     public static function getPages(): array
     {
         return [
@@ -80,5 +96,5 @@ class BOMResource extends Resource
             'create' => Pages\CreateBOM::route('/create'),
             'edit' => Pages\EditBOM::route('/{record}/edit'),
         ];
-    }    
+    }
 }

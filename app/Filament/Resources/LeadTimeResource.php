@@ -7,6 +7,7 @@ use App\Filament\Resources\LeadTimeResource\RelationManagers;
 use App\Models\BOM;
 use App\Models\LeadTime;
 use App\Models\LeadTimeFactor;
+use App\Models\Product;
 use Filament\Forms;
 use Filament\Forms\Components\Select;
 use Filament\Resources\Form;
@@ -22,16 +23,21 @@ class LeadTimeResource extends Resource
 
     protected static ?string $navigationIcon = 'heroicon-s-clock';
 
+    protected static ?string $navigationGroup = 'Management';
+
     public static function form(Form $form): Form
     {
         return $form
             ->schema([
-                Select::make('id_lead_time_factor')
-                    ->label('Lead Time Factor')
-                    ->options(LeadTimeFactor::all()->pluck('name', 'id')->toArray()),
+                Select::make('id_product')
+                    ->label('Product')
+                    ->options(Product::all()->pluck('name', 'id')->toArray()),
                 Select::make('id_bom')
                     ->label('BOM')
                     ->options(BOM::all()->pluck('item', 'id')->toArray()),
+                Select::make('id_lead_time_factor')
+                    ->label('Lead Time Factor')
+                    ->options(LeadTimeFactor::all()->pluck('name', 'id')->toArray()),
             ]);
     }
 
@@ -39,10 +45,12 @@ class LeadTimeResource extends Resource
     {
         return $table
             ->columns([
-                Tables\Columns\TextColumn::make('id_lead_time_factor')
-                    ->label('Lead Time Factor'),
-                Tables\Columns\TextColumn::make('id_bom')
+                Tables\Columns\TextColumn::make('product.name')
+                    ->label('Product'),
+                Tables\Columns\TextColumn::make('bom.item')
                     ->label('BOM'),
+                Tables\Columns\TextColumn::make('lead_time_factor.name')
+                    ->label('Lead Time Factor'),
                 Tables\Columns\TextColumn::make('created_at')
                     ->dateTime(),
                 Tables\Columns\TextColumn::make('updated_at')

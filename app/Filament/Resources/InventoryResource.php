@@ -19,6 +19,8 @@ class InventoryResource extends Resource
 
     protected static ?string $navigationIcon = 'heroicon-o-shopping-cart';
 
+    protected static ?string $navigationGroup = 'Component';
+
     public static function form(Form $form): Form
     {
         return $form

@@ -15,8 +15,9 @@ return new class extends Migration
     {
         Schema::create('lead_times', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('id_lead_time_factor')->constrained('lead_time_factors')->onDelete('cascade')->onUpdate('cascade');
+            $table->foreignId('id_product')->constrained('products')->onDelete('cascade')->onUpdate('cascade');
             $table->foreignId('id_bom')->constrained('b_o_m_s')->onDelete('cascade')->onUpdate('cascade');
+            $table->foreignId('id_lead_time_factor')->constrained('lead_time_factors')->onDelete('cascade')->onUpdate('cascade');
             $table->timestamps();
         });
     }

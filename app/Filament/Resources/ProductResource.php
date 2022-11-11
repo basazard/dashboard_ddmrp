@@ -2,9 +2,9 @@
 
 namespace App\Filament\Resources;
 
-use App\Filament\Resources\LeadTimeFactorResource\Pages;
-use App\Filament\Resources\LeadTimeFactorResource\RelationManagers;
-use App\Models\LeadTimeFactor;
+use App\Filament\Resources\ProductResource\Pages;
+use App\Filament\Resources\ProductResource\RelationManagers;
+use App\Models\Product;
 use Filament\Forms;
 use Filament\Resources\Form;
 use Filament\Resources\Resource;
@@ -13,22 +13,19 @@ use Filament\Tables;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 
-class LeadTimeFactorResource extends Resource
+class ProductResource extends Resource
 {
-    protected static ?string $model = LeadTimeFactor::class;
+    protected static ?string $model = Product::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-clock';
+    protected static ?string $navigationIcon = 'heroicon-o-collection';
 
-    protected static ?string $navigationGroup = 'Management';
+    protected static ?string $navigationGroup = 'Component';
 
     public static function form(Form $form): Form
     {
         return $form
             ->schema([
                 Forms\Components\TextInput::make('name')
-                    ->required()
-                    ->maxLength(255),
-                Forms\Components\TextInput::make('lead_time_factor_range')
                     ->required()
                     ->maxLength(255),
             ]);
@@ -39,7 +36,10 @@ class LeadTimeFactorResource extends Resource
         return $table
             ->columns([
                 Tables\Columns\TextColumn::make('name'),
-                Tables\Columns\TextColumn::make('lead_time_factor_range'),
+                Tables\Columns\TextColumn::make('created_at')
+                    ->dateTime(),
+                Tables\Columns\TextColumn::make('updated_at')
+                    ->dateTime(),
             ])
             ->filters([
                 //
@@ -51,20 +51,27 @@ class LeadTimeFactorResource extends Resource
                 Tables\Actions\DeleteBulkAction::make(),
             ]);
     }
-    
+
     public static function getRelations(): array
     {
         return [
             //
         ];
     }
-    
+
     public static function getPages(): array
     {
         return [
-            'index' => Pages\ListLeadTimeFactors::route('/'),
-            'create' => Pages\CreateLeadTimeFactor::route('/create'),
-            'edit' => Pages\EditLeadTimeFactor::route('/{record}/edit'),
+            'index' => Pages\ListProducts::route('/'),
+            'create' => Pages\CreateProduct::route('/create'),
+            'edit' => Pages\EditProduct::route('/{record}/edit'),
         ];
-    }    
+    }
+
+    public static function getWidgets(): array
+    {
+        return [
+            ProductResource\Widgets\ProductOverview::class,
+        ];
+    }
 }
